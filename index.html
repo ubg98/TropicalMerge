@@ -1,43 +1,92 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no"/>
-
-    <title>1 on 1 Soccer Unblocked - ubg235 GameDistribution</title>
-
-    <link rel="stylesheet" href="css/stylesheet.css" type="text/css" />
+    <title>Gamedistribution.com HTML5 Self-Hosted Game Wrapper Unblocked - ubg235 GameDistribution</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <style>
+        html {
+            height: 100%;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+        #container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            max-height: 100%;
+            min-width: 100%;
+            min-height: 100%;
+            box-sizing: border-box;
+        }
+    </style>
 </head>
 <body style="overflow:hidden;">
-<div id="orientation"></div>
-<div id="gameCanvas"></div>
-<div id="loader">Loading ...</div>
+<iframe id="container" frameborder="0" allow="autoplay" allowfullscreen seamless="seamless" scrolling="no"></iframe>
+<script type="application/javascript">
+    function getRequestParameters(url) {
+        var res = {};
+        var index = url.indexOf("?");
+        if (index !== -1) {
+            var query = url.substr(index + 1); // Drop the leading '?' / '#'
+            var nameValues = query.split("&");
 
-<script type="text/javascript">
-    const ga= function() {
-      console.log("ga", arguments);
-    }
-    var gameName = "1-on-1-soccer.min.js";
-
-    //This all here is for cache busting;
-    function addScript(src, buster, callback) {
-        var s = document.createElement('script');
-        s.setAttribute('src', src + '?v=' + buster);
-        if (typeof callback === 'function') {
-            s.onload = callback;
+            for (var i = 0; i < nameValues.length; i++) {
+                var nameValue = nameValues[i].split("=");
+                var name = nameValue[0];
+                var value = nameValue[1];
+                value = decodeURIComponent(value.replace(/\+/g, " "));
+                res[name] = value;
+            }
         }
-        document.body.appendChild(s);
+        return res;
+    }
+    function getReferrerUrl() {
+        var parentUrl = document.location.href;
+
+        if (window.location !== window.parent.location && document.referrer) {
+            parentUrl = document.referrer;
+        }
+
+        if (document.referrer.indexOf('localhost') !== -1) {
+            parentUrl = 'https://gamedistribution.com/';
+        }
+
+        var params = getRequestParameters(parentUrl);
+        return params.gd_sdk_referrer_url || parentUrl;
     }
 
-    addScript('version.js', Date.now(), function () {
-        addScript(gameName, version, function () {
-          console.log("SkipGA");
-        })
-    })
-</script>
-  <script src="js/analytics_ubg_v1_4.js"></script>
-  <script src="js/ubg235_client_v1_1.js"></script>
+    function getUserId() {
+        var userData = window.localStorage.getItem(projectName + "_plinga");
+        if (userData) {
+            try {
+                return JSON.parse(userData).id;
+            } catch (e) {
+                console.error("Error parse user data", e);
+            }
+        }
+    }
 
+
+    // Add the self-hosted game url as value of gameUrl.
+    var gameUrl = 'https://wondermerge.gcdn.co/publish/html5/?source=gdcom';
+    var projectName = 'wondermerge';
+    var userId = getUserId();
+
+    var src = gameUrl;
+    if (userId) {
+        src += "&gdcom_userid=" + userId;
+    }
+    src += '&gd_sdk_referrer_url=' + getReferrerUrl();
+
+    document.getElementById('container').src = src;
+</script>
 </body>
 </html>
